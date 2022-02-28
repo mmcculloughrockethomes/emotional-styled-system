@@ -3,7 +3,7 @@ import { Box } from "./components";
 import { css } from "@emotion/react";
 import { getThemeCSSVars } from "./system";
 
-function SectionEmotion(props) {
+function SectionEmotion() {
 	const varArray = getThemeCSSVars();
 	let cssVariables = "";
 	for (let i in varArray) {
@@ -16,15 +16,17 @@ function SectionEmotion(props) {
 			`}>
 			<h2>Sweet Emotion</h2>
 			<Box
-				mb="36"
-				mt="12"
-				pl="96"
-				title="Wuuuut ya I tink that is cool"
-				color="sprk.black.50"
-				onClick={() => {
-					console.log("oh ya");
-				}}>
-				hi~
+				// mb="36"
+				showBoxTitle={true}
+				// mt="12"
+				// pl="96"
+				// title="Wuuuut ya I tink that is cool"
+				// color="sprk.black.50"
+				// onClick={() => {
+				// 	console.log("oh ya");
+				// }}
+				>
+				<p>Hey, this is the first box!</p>
 			</Box>
 			<h3>Oh ya</h3>
 		</div>
