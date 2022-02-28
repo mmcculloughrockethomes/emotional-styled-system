@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect } from "react";
-import { Button, Container, Box } from "./components";
+import { Box } from "./components";
 import { css } from "@emotion/react";
 import { getThemeCSSVars } from "./system";
 
