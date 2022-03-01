@@ -1,7 +1,13 @@
 import { space, color } from "./config";
-import theme from "../theme";
+import { StyleProps } from "./system-types";
+import theme, { themeType, themeValue } from "../theme";
 
-export function parseStyleProps(props) {
+export interface anyReactProps {
+  [x: string]: unknown;
+}
+
+// TYPES: This could be any regular props
+export function parseStyleProps(props: anyReactProps) {
   const styleProps = {};
   const forwardProps = {};
 
@@ -33,11 +39,15 @@ const isStyleProp = (propKey) => {
  *
  * WIP
  *
- * covert {mb: "36"} to {marginBottom: "var(--rh-space-36)"}
- * covert {color: "sprk.purple.deep"} to {color: "var(--rh-colors-sprk_purple_dark)"}
+ * covert {mb: "36"} to ['marginBottom', "var(--rh-space-36)"]
+ * covert {color: "sprk.purple.deep"} to ['color', "var(--rh-colors-sprk_purple_dark)"]
  */
+export type cssPropAndVar = [keyof StyleProps, string];
 
-export function getStylePropCssVar(propKey, propValue) {
+export function getStylePropCssVar(
+  propKey: keyof anyReactProps | keyof StyleProps,
+  propValue: string | number
+): cssPropAndVar | false {
   const allStyleProps = getAllStyleProps();
 
   const isValueInTheme = isValidThemeValue(
@@ -57,6 +67,8 @@ export function getStylePropCssVar(propKey, propValue) {
     propValue
   );
 
+  if (!CSSVarFunctionString) return false;
+
   return [allStyleProps[propKey].property, CSSVarFunctionString];
 }
 
@@ -67,7 +79,10 @@ export function getStylePropCssVar(propKey, propValue) {
 /**
  * Validates that a given themeKey and themeValueKey are found within the theme
  */
-export function isValidThemeValue(themeKey, themeValueKey) {
+export function isValidThemeValue(
+  themeKey: keyof themeType,
+  themeValueKey: keyof themeValue
+): boolean {
   return Boolean(theme?.[themeKey]?.[themeValueKey]);
 }
 
@@ -75,7 +90,10 @@ export function isValidThemeValue(themeKey, themeValueKey) {
  * Contains the "template" for generating CSS variables given a themeKey and themeValueKey
  * Returns a string
  */
-export function getCSSVarName(themeKey, themeValueKey) {
+export function getCSSVarName(
+  themeKey: keyof themeType,
+  themeValueKey: keyof themeValue
+) {
   if (!isValidThemeValue(themeKey, themeValueKey)) return false;
   return `--rh-${themeKey}-${themeValueKey}`.replace(/\./gi, "_");
 }
@@ -83,19 +101,22 @@ export function getCSSVarName(themeKey, themeValueKey) {
 /**
  * Returns a value from the theme given a themeKey and themeValueKey
  */
-export function getThemeValue(themeKey, themeValueKey) {
+export function getThemeValue(
+  themeKey: keyof themeType,
+  themeValueKey: keyof themeValue
+) {
   if (!isValidThemeValue(themeKey, themeValueKey)) return false;
-  const themeValue =
-    typeof theme[themeKey][themeValueKey] === "object"
-      ? theme[themeKey][themeValueKey].value
-      : theme[themeKey][themeValueKey];
+  const themeValue = theme[themeKey][themeValueKey];
   return themeValue;
 }
 
 /**
  * Returns a CSS value - using CSS var function
  */
-export function getCSSVarFunctionString(themeKey, themeValueKey) {
+export function getCSSVarFunctionString(
+  themeKey: keyof themeType,
+  themeValueKey: string
+): false | string {
   if (!isValidThemeValue(themeKey, themeValueKey)) return false;
   const varName = getCSSVarName(themeKey, themeValueKey);
   return `var(${varName})`;
@@ -104,7 +125,10 @@ export function getCSSVarFunctionString(themeKey, themeValueKey) {
 /**
  * Return a string representing a CSS property/value. (using CSS var function)
  */
-export function getThemeRuleCSSVarString(themeKey, themeValueKey) {
+export function getThemeRuleCSSVarString(
+  themeKey: keyof themeType,
+  themeValueKey: string
+) {
   if (!isValidThemeValue(themeKey, themeValueKey)) return false;
 
   const varName = getCSSVarName(themeKey, themeValueKey);
@@ -130,7 +154,10 @@ export function getThemeCSSVars() {
 /**
  * Playing around...
  */
-const generateErrorMessage = (staticTags, ...tags) => {
+const generateErrorMessage = (
+  staticTags: TemplateStringsArray,
+  ...tags: string[]
+) => {
   let str = [staticTags[0]];
   for (let i = 0; i < tags.length; i++) {
     str.push(tags[i] + staticTags[i + 1]);
@@ -141,18 +168,25 @@ const generateErrorMessage = (staticTags, ...tags) => {
 /**
  * Error Messages
  */
-const getErrorMessage = {
-  invalidStyleProp: (values) => {
+interface getErrorMessagePropTypes {
+  [x: string]: Function;
+}
+
+const getErrorMessage: getErrorMessagePropTypes = {
+  invalidStyleProp: (values: string[]) => {
     const [styleProp] = values;
     return generateErrorMessage`Invalid style prop ${styleProp}.`;
   },
-  invalidThemeValue: (values) => {
+  invalidThemeValue: (values: string[]) => {
     const [themeScale, themeValue] = values;
     return generateErrorMessage`Theme value "${themeValue}" not found in "${themeScale}".`;
   },
 };
 
-const throwWarning = (errorType, values) => {
+const throwWarning = (
+  errorType: keyof getErrorMessagePropTypes,
+  values: string[]
+) => {
   const message = getErrorMessage[errorType](values);
   console.warn(`WARNING: ${message}`);
 };
