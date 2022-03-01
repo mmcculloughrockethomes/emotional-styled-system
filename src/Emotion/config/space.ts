@@ -33,3 +33,5 @@ Object.assign(space, {
   pl: space.paddingLeft,
   pr: space.paddingRight,
 });
+
+// styled-system/src/config/space.ts

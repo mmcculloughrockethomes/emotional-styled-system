@@ -1,7 +1,11 @@
 import { space, color } from "./config";
 import theme from "./theme";
 
-export function parseStyleProps(props) {
+export interface allProps {
+	[x: string]: unknown;
+}
+
+export function parseStyleProps(props: allProps) {
 	const styleProps = {};
 	const forwardProps = {};
 
@@ -23,7 +27,7 @@ const getAllStyleProps = () => ({
 	...color,
 });
 
-const isStyleProp = (propKey) => {
+const isStyleProp = (propKey: string) => {
 	const allStyleProps = getAllStyleProps();
 	return allStyleProps.hasOwnProperty(propKey) ? allStyleProps[propKey] : false;
 };
@@ -36,7 +40,7 @@ const isStyleProp = (propKey) => {
  * covert {mb: "36"} to {marginBottom: "var(--rh-space-36)"}
  * covert {color: "sprk.purple.deep"} to {color: "var(--rh-colors-sprk_purple_dark)"}
  */
-export function getStylePropCssVar(propKey, propValue) {
+export function getStylePropCssVar(propKey: string, propValue: string | number ) {
 	const allStyleProps = getAllStyleProps();
 
 	const isValueInTheme = isValidThemeValue(
@@ -63,7 +67,7 @@ export function getStylePropCssVar(propKey, propValue) {
 /**
  * Validates that a given themeKey and themeValueKey are found within the theme
  */
-export function isValidThemeValue(themeKey, themeValueKey) {
+export function isValidThemeValue(themeKey: string, themeValueKey: string) {
 	return Boolean(theme?.[themeKey]?.[themeValueKey]);
 }
 
@@ -71,7 +75,7 @@ export function isValidThemeValue(themeKey, themeValueKey) {
  * Contains the "template" for generating CSS variables given a themeKey and themeValueKey
  * Returns a string
  */
-export function getCSSVarName(themeKey, themeValueKey) {
+export function getCSSVarName(themeKey: string, themeValueKey: string) {
 	if (!isValidThemeValue(themeKey, themeValueKey)) return false;
 	return `--rh-${themeKey}-${themeValueKey}`.replace(/\./gi, "_");
 }
@@ -79,7 +83,7 @@ export function getCSSVarName(themeKey, themeValueKey) {
 /**
  * Returns a value from the theme given a themeKey and themeValueKey
  */
-export function getThemeValue(themeKey, themeValueKey) {
+export function getThemeValue(themeKey: string, themeValueKey: string) {
 	if (!isValidThemeValue(themeKey, themeValueKey)) return false;
 	const themeValue =
 		typeof theme[themeKey][themeValueKey] === "object"
@@ -91,7 +95,7 @@ export function getThemeValue(themeKey, themeValueKey) {
 /**
  * Returns a CSS value - using CSS var function
  */
-export function getCSSVarFunctionString(themeKey, themeValueKey) {
+export function getCSSVarFunctionString(themeKey: string, themeValueKey: string) {
 	if (!isValidThemeValue(themeKey, themeValueKey)) return false;
 	const varName = getCSSVarName(themeKey, themeValueKey);
 	return `var(${varName})`;
@@ -100,7 +104,7 @@ export function getCSSVarFunctionString(themeKey, themeValueKey) {
 /**
  * Return a string representing a CSS property/value. (using CSS var function)
  */
-export function getThemeRuleCSSVarString(themeKey, themeValueKey) {
+export function getThemeRuleCSSVarString(themeKey: string, themeValueKey: string) {
 	if (!isValidThemeValue(themeKey, themeValueKey)) return false;
 
 	const varName = getCSSVarName(themeKey, themeValueKey);
@@ -126,7 +130,7 @@ export function getThemeCSSVars() {
 /**
  * Playing around...
  */
-const generateErrorMessage = (staticTags, ...tags) => {
+const generateErrorMessage = (staticTags: TemplateStringsArray, ...tags: string[]) => {
 	let str = [staticTags[0]];
 	for (let i = 0; i < tags.length; i++) {
 		str.push(tags[i] + staticTags[i + 1]);
@@ -137,18 +141,18 @@ const generateErrorMessage = (staticTags, ...tags) => {
 /**
  * Error Messages
  */
-const getErrorMessage = {
-	invalidStyleProp: (values) => {
+const getErrorMessage = {	
+	invalidStyleProp: (values: string[]):string => {
 		const [styleProp] = values;
 		return generateErrorMessage`Invalid style prop ${styleProp}.`;
 	},
-	invalidThemeValue: (values) => {
+	invalidThemeValue: (values: string[]):string => {
 		const [themeScale, themeValue] = values;
 		return generateErrorMessage`Theme value "${themeValue}" not found in "${themeScale}".`;
 	},
 };
 
-const throwWarning = (errorType, values) => {
+const throwWarning = (errorType: string, values: string[]) => {
 	const message = getErrorMessage[errorType](values);
 	console.warn(`WARNING: ${message}`);
 };
