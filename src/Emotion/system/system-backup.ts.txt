@@ -1,5 +1,5 @@
 import { space, color } from "./config";
-import theme from "./theme";
+import theme from "../theme";
 
 export interface allProps {
 	[x: string]: unknown;
