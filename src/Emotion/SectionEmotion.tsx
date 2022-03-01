@@ -16,19 +16,18 @@ function SectionEmotion() {
 			`}>
 			<h2>Sweet Emotion</h2>
 			<Box
-				// mb="36"
+				mb="9"
 				showBoxTitle={true}
-				// mt="12"
-				// pl="96"
-				// title="Wuuuut ya I tink that is cool"
-				// color="sprk.black.50"
-				// onClick={() => {
-				// 	console.log("oh ya");
-				// }}
+				mt="8"
+				pl="12"
+				myTitle="Wuuuut ya I tink that is cool"
+				color="sprk.black"
+				onClick={() => {
+					console.log("oh ya");
+				}}
 				>
 				<p>Hey, this is the first box!</p>
 			</Box>
-			<h3>Oh ya</h3>
 		</div>
 	);
 }

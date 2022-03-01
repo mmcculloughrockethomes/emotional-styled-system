@@ -45,7 +45,7 @@ export function getStylePropCssVar(propKey, propValue) {
 	);
 
 	if (!isValueInTheme) {
-		throwWarning("invalidThemeValue", [propValue]);
+		throwWarning("invalidThemeValue", [allStyleProps[propKey].scale, propValue]);
 	}
 
 	const CSSVarFunctionString = getCSSVarFunctionString(
@@ -143,14 +143,14 @@ const getErrorMessage = {
 		return generateErrorMessage`Invalid style prop ${styleProp}.`;
 	},
 	invalidThemeValue: (values) => {
-		const [themeValue] = values;
-		return generateErrorMessage`Invalid style prop value ${themeValue}.`;
+		const [themeScale, themeValue] = values;
+		return generateErrorMessage`Theme value "${themeValue}" not found in "${themeScale}".`;
 	},
 };
 
 const throwWarning = (errorType, values) => {
 	const message = getErrorMessage[errorType](values);
-	console.warn(message);
+	console.warn(`WARNING: ${message}`);
 };
 
 /**

@@ -11,7 +11,7 @@ interface boxPropTypes {
 	[x : string]: unknown;
 }
 
-const Box = ({ children, as, showBoxTitle = false, myTitle, ...otherProps }: boxPropTypes) => {
+const MyComponent = ({ children, as, showBoxTitle = false, myTitle, ...otherProps }: boxPropTypes) => {
 	const TagName = as ? as : "div";
 	const [styleProps, forWardProps] = parseStyleProps(otherProps);
 
@@ -35,4 +35,4 @@ const Box = ({ children, as, showBoxTitle = false, myTitle, ...otherProps }: box
 		</>
 	);
 }
-export {Box};
+export {MyComponent};
