@@ -29,9 +29,9 @@ const getAllStyleProps = () => ({
   ...color,
 });
 
-const isStyleProp = (propKey) => {
-  const allStyleProps = getAllStyleProps();
-  return allStyleProps.hasOwnProperty(propKey) ? allStyleProps[propKey] : false;
+const isStyleProp = (propKey: string) => {
+  const allStylePropKeys = Object.keys(getAllStyleProps());
+  return propKey in allStylePropKeys;
 };
 
 /**
@@ -45,13 +45,15 @@ const isStyleProp = (propKey) => {
 export type cssPropAndVar = [keyof StyleProps, string];
 
 export function getStylePropCssVar(
-  propKey: keyof anyReactProps | keyof StyleProps,
+  propKey: string,
   propValue: string | number
 ): cssPropAndVar | false {
   const allStyleProps = getAllStyleProps();
 
+  if (!isStyleProp(propKey)) return false;
+
   const isValueInTheme = isValidThemeValue(
-    allStyleProps[propKey].scale,
+    allStyleProps.propKey.scale,
     propValue
   );
 
@@ -83,6 +85,9 @@ export function isValidThemeValue(
   themeKey: keyof themeType,
   themeValueKey: keyof themeValue
 ): boolean {
+  // if (!theme.themeKey) return false;
+  // if (!theme.themeKey.themeKeyValue) return false;
+  // return true;
   return Boolean(theme?.[themeKey]?.[themeValueKey]);
 }
 
@@ -93,7 +98,7 @@ export function isValidThemeValue(
 export function getCSSVarName(
   themeKey: keyof themeType,
   themeValueKey: keyof themeValue
-) {
+): false | string {
   if (!isValidThemeValue(themeKey, themeValueKey)) return false;
   return `--rh-${themeKey}-${themeValueKey}`.replace(/\./gi, "_");
 }
@@ -104,7 +109,7 @@ export function getCSSVarName(
 export function getThemeValue(
   themeKey: keyof themeType,
   themeValueKey: keyof themeValue
-) {
+): false | string | number {
   if (!isValidThemeValue(themeKey, themeValueKey)) return false;
   const themeValue = theme[themeKey][themeValueKey];
   return themeValue;
@@ -128,7 +133,7 @@ export function getCSSVarFunctionString(
 export function getThemeRuleCSSVarString(
   themeKey: keyof themeType,
   themeValueKey: string
-) {
+): false | string {
   if (!isValidThemeValue(themeKey, themeValueKey)) return false;
 
   const varName = getCSSVarName(themeKey, themeValueKey);
