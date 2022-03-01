@@ -1,3 +1,4 @@
+import * as CSS from "csstype";
 import { t } from "../utils";
 
 export const space = {
@@ -35,3 +36,33 @@ Object.assign(space, {
 });
 
 // styled-system/src/config/space.ts
+export interface SpaceProps {
+  margin?: CSS.Property.Margin;
+  m?: CSS.Property.Margin;
+  marginTop?: CSS.Property.MarginTop;
+  mt?: CSS.Property.MarginTop;
+  marginRight?: CSS.Property.MarginRight;
+  mr?: CSS.Property.MarginRight;
+  marginBottom?: CSS.Property.MarginBottom;
+  mb?: CSS.Property.MarginBottom;
+  marginLeft?: CSS.Property.MarginLeft;
+  ml?: CSS.Property.MarginLeft;
+  marginX?: CSS.Property.Margin;
+  mx?: CSS.Property.Margin;
+  marginY?: CSS.Property.Margin;
+  my?: CSS.Property.Margin;
+  padding?: CSS.Property.Padding;
+  p?: CSS.Property.Padding;
+  paddingTop?: CSS.Property.PaddingTop;
+  pt?: CSS.Property.PaddingTop;
+  paddingRight?: CSS.Property.PaddingRight;
+  pr?: CSS.Property.PaddingRight;
+  paddingBottom?: CSS.Property.PaddingBottom;
+  pb?: CSS.Property.PaddingBottom;
+  paddingLeft?: CSS.Property.PaddingLeft;
+  pl?: CSS.Property.PaddingLeft;
+  paddingX?: CSS.Property.Padding;
+  px?: CSS.Property.Padding;
+  paddingY?: CSS.Property.Padding;
+  py?: CSS.Property.Padding;
+}
