@@ -24,13 +24,28 @@ export function parseStyleProps(props: anyReactProps) {
   return [styleProps, forwardProps];
 }
 
-const getAllStyleProps = () => ({
-  ...space,
-  ...color,
-});
+interface stylePropsConfigItem {
+  property: string;
+  scale?: string;
+  transform?: Function;
+}
+export interface stylePropsConfigTyps {
+  [x: string]: stylePropsConfigItem;
+}
 
-const isStyleProp = (propKey: string) => {
-  const allStylePropKeys = Object.keys(getAllStyleProps());
+const getAllStyleProps = (): stylePropsConfigTyps => {
+  return {
+    ...space,
+    ...color,
+  };
+};
+
+const isStyleProp = (propKey: string): Boolean => {
+  const allStyleProps = {
+    ...space,
+    ...color,
+  };
+  const allStylePropKeys = Object.keys(allStyleProps);
   return propKey in allStylePropKeys;
 };
 
@@ -49,6 +64,7 @@ export function getStylePropCssVar(
   propValue: string | number
 ): cssPropAndVar | false {
   const allStyleProps = getAllStyleProps();
+  console.log("allStyleProps", allStyleProps);
 
   if (!isStyleProp(propKey)) return false;
 
