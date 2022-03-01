@@ -28,6 +28,7 @@ const theme: themeType = {
     "sprk.yellow": "#EDA302",
     "sprk.white": "#FFFFFF",
     "sprk.black": "#1C1B1A",
+    red: "red",
   },
   fonts: {},
   space: {

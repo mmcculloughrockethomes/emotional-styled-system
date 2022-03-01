@@ -6,8 +6,12 @@ export interface anyReactProps {
   [x: string]: unknown;
 }
 
-// TYPES: This could be any regular props
-export function parseStyleProps(props: anyReactProps) {
+/**
+ * TODO: This needs to be refactored, or split up
+ */
+export function parseStyleProps(
+  props: anyReactProps
+): [StyleProps, anyReactProps] {
   const styleProps = {};
   const forwardProps = {};
 
@@ -26,7 +30,7 @@ export function parseStyleProps(props: anyReactProps) {
 
 interface stylePropsConfigItem {
   property: string;
-  scale?: string;
+  scale: string;
   transform?: Function;
 }
 export interface stylePropsConfigTyps {
@@ -46,7 +50,7 @@ const isStyleProp = (propKey: string): Boolean => {
     ...color,
   };
   const allStylePropKeys = Object.keys(allStyleProps);
-  return propKey in allStylePropKeys;
+  return allStylePropKeys.includes(propKey);
 };
 
 /**
@@ -57,19 +61,20 @@ const isStyleProp = (propKey: string): Boolean => {
  * covert {mb: "36"} to ['marginBottom', "var(--rh-space-36)"]
  * covert {color: "sprk.purple.deep"} to ['color', "var(--rh-colors-sprk_purple_dark)"]
  */
-export type cssPropAndVar = [keyof StyleProps, string];
+export type cssPropAndVar = [keyof themeValue, string];
 
 export function getStylePropCssVar(
-  propKey: string,
-  propValue: string | number
-): cssPropAndVar | false {
+  propKey: string | keyof StyleProps,
+  propValue: string | number | unknown
+): [keyof StyleProps, string] | false {
   const allStyleProps = getAllStyleProps();
-  console.log("allStyleProps", allStyleProps);
 
   if (!isStyleProp(propKey)) return false;
+  if (typeof propValue !== "string" && typeof propValue !== "number")
+    return false;
 
   const isValueInTheme = isValidThemeValue(
-    allStyleProps.propKey.scale,
+    allStyleProps[propKey].scale,
     propValue
   );
 
@@ -99,11 +104,10 @@ export function getStylePropCssVar(
  */
 export function isValidThemeValue(
   themeKey: keyof themeType,
-  themeValueKey: keyof themeValue
+  themeValueKey: keyof themeValue | unknown
 ): boolean {
-  // if (!theme.themeKey) return false;
-  // if (!theme.themeKey.themeKeyValue) return false;
-  // return true;
+  if (typeof themeValueKey !== "string" && typeof themeValueKey !== "number")
+    return false;
   return Boolean(theme?.[themeKey]?.[themeValueKey]);
 }
 
@@ -113,7 +117,7 @@ export function isValidThemeValue(
  */
 export function getCSSVarName(
   themeKey: keyof themeType,
-  themeValueKey: keyof themeValue
+  themeValueKey: keyof themeValue | unknown
 ): false | string {
   if (!isValidThemeValue(themeKey, themeValueKey)) return false;
   return `--rh-${themeKey}-${themeValueKey}`.replace(/\./gi, "_");
@@ -136,7 +140,7 @@ export function getThemeValue(
  */
 export function getCSSVarFunctionString(
   themeKey: keyof themeType,
-  themeValueKey: string
+  themeValueKey: string | number
 ): false | string {
   if (!isValidThemeValue(themeKey, themeValueKey)) return false;
   const varName = getCSSVarName(themeKey, themeValueKey);
@@ -206,7 +210,7 @@ const getErrorMessage: getErrorMessagePropTypes = {
 
 const throwWarning = (
   errorType: keyof getErrorMessagePropTypes,
-  values: string[]
+  values: (string | number)[]
 ) => {
   const message = getErrorMessage[errorType](values);
   console.warn(`WARNING: ${message}`);
