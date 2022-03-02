@@ -1,32 +1,11 @@
 import { space, color } from "./config";
-import { StyleProps } from "./system-types";
 import theme, { themeType, themeValue } from "../theme";
 
 export interface anyReactProps {
   [x: string]: unknown;
 }
 
-/**
- * TODO: This needs to be refactored, or split up
- */
-export function parseStyleProps(
-  props: anyReactProps
-): [StyleProps, anyReactProps] {
-  const styleProps = {};
-  const forwardProps = {};
-
-  Object.entries(props).forEach((entry) => {
-    const [key, value] = entry;
-    if (isStyleProp(key)) {
-      const [cssProperty, cssValue] = getStylePropCssVar(key, value);
-      styleProps[cssProperty] = cssValue;
-    } else {
-      forwardProps[key] = value;
-    }
-  });
-
-  return [styleProps, forwardProps];
-}
+export type cssPropAndVar = [keyof themeValue, string];
 
 interface stylePropsConfigItem {
   property: string;
@@ -37,6 +16,44 @@ export interface stylePropsConfigTyps {
   [x: string]: stylePropsConfigItem;
 }
 
+export function parseStyleProps(props: anyReactProps) {
+  const styleProps: { [x: string]: string | number } = {};
+  const forwardProps: { [x: string]: unknown } = {};
+  const { xs, ...rest } = props;
+
+  Object.entries(rest).forEach((entry: [string, unknown]) => {
+    const [key, value] = entry;
+    if (
+      isStyleProp(key) &&
+      (typeof value === "string" || typeof value === "number")
+    ) {
+      styleProps[key] = value;
+    } else {
+      forwardProps[key] = value;
+    }
+  });
+
+  const stylePropsMapped = getMappedStyleProps(styleProps);
+
+  return [stylePropsMapped, forwardProps];
+}
+
+// The prop keys are already known to be valid prop keys
+interface mappedStylePropsTypes {
+  [x: string]: string;
+}
+const getMappedStyleProps = (styleProps: { [x: string]: string | number }) => {
+  const mappedStyleProps: mappedStylePropsTypes = {};
+
+  Object.entries(styleProps).forEach((entry) => {
+    const [key, value] = entry;
+    const [cssProperty, cssValue] = getStylePropCssVar(key, value);
+    mappedStyleProps[cssProperty] = cssValue;
+  });
+
+  return mappedStyleProps;
+};
+
 const getAllStyleProps = (): stylePropsConfigTyps => {
   return {
     ...space,
@@ -45,11 +62,10 @@ const getAllStyleProps = (): stylePropsConfigTyps => {
 };
 
 const isStyleProp = (propKey: string): Boolean => {
-  const allStyleProps = {
+  const allStylePropKeys = Object.keys({
     ...space,
     ...color,
-  };
-  const allStylePropKeys = Object.keys(allStyleProps);
+  });
   return allStylePropKeys.includes(propKey);
 };
 
@@ -61,17 +77,11 @@ const isStyleProp = (propKey: string): Boolean => {
  * covert {mb: "36"} to ['marginBottom', "var(--rh-space-36)"]
  * covert {color: "sprk.purple.deep"} to ['color', "var(--rh-colors-sprk_purple_dark)"]
  */
-export type cssPropAndVar = [keyof themeValue, string];
-
 export function getStylePropCssVar(
-  propKey: string | keyof StyleProps,
-  propValue: string | number | unknown
-): [keyof StyleProps, string] | false {
+  propKey: keyof stylePropsConfigTyps,
+  propValue: string | number
+): [keyof stylePropsConfigTyps, string] {
   const allStyleProps = getAllStyleProps();
-
-  if (!isStyleProp(propKey)) return false;
-  if (typeof propValue !== "string" && typeof propValue !== "number")
-    return false;
 
   const isValueInTheme = isValidThemeValue(
     allStyleProps[propKey].scale,
@@ -89,8 +99,6 @@ export function getStylePropCssVar(
     allStyleProps[propKey].scale,
     propValue
   );
-
-  if (!CSSVarFunctionString) return false;
 
   return [allStyleProps[propKey].property, CSSVarFunctionString];
 }
@@ -117,7 +125,7 @@ export function isValidThemeValue(
  */
 export function getCSSVarName(
   themeKey: keyof themeType,
-  themeValueKey: keyof themeValue | unknown
+  themeValueKey: keyof themeValue
 ): false | string {
   if (!isValidThemeValue(themeKey, themeValueKey)) return false;
   return `--rh-${themeKey}-${themeValueKey}`.replace(/\./gi, "_");
@@ -141,8 +149,7 @@ export function getThemeValue(
 export function getCSSVarFunctionString(
   themeKey: keyof themeType,
   themeValueKey: string | number
-): false | string {
-  if (!isValidThemeValue(themeKey, themeValueKey)) return false;
+): string {
   const varName = getCSSVarName(themeKey, themeValueKey);
   return `var(${varName})`;
 }

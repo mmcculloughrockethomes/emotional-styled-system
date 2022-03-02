@@ -15,7 +15,7 @@ function showMeTheMargin(margin: CSS.Property.Margin) {
 
 const TestingSystem = () => {
   const results = showMeTheProps({
-    color: "white",
+    color: "var(--rh-color-white)",
     mb: "32",
   });
   const color = showMeTheColor("red");
