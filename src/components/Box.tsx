@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useMemo } from "react";
 import { css, useTheme } from "@emotion/react";
-import { parseStyleProps } from "../system";
+import { parseStyleProps, getFinalCss } from "../system";
 
 interface boxPropTypes {
   children: string | JSX.Element | JSX.Element[];
@@ -29,6 +29,8 @@ const Box = ({
     borderWidth: "1px",
     ...styleProps,
   };
+
+  const CSSWithMediaQueries = getFinalCss(boxStyles);
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { space, color } from "./config";
 import theme, { themeType, themeValue } from "../theme";
+import facepaint from "facepaint";
 
 export interface anyReactProps {
   [x: string]: unknown;
@@ -184,6 +185,21 @@ export function getThemeCSSVars() {
     }
   }
   return cssVars;
+}
+
+/**
+ * Wrap in facepaint
+ */
+
+export function getFinalCss(
+  css: mappedStylePropsTypes
+): facepaint.DynamicStyle[] {
+  const mq = facepaint([
+    "@media(min-width: 420px)",
+    "@media(min-width: 920px)",
+    "@media(min-width: 1120px)",
+  ]);
+  return mq(css);
 }
 
 /**
