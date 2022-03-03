@@ -57,12 +57,12 @@ function SectionEmotion() {
       <Box
         mb="9"
         showBoxTitle="asdfasdf"
-        mt="8"
+        mt={["4", "8", "10", "12"]}
         pl="4"
         mx="4"
         myTitle="Wuuuut ya I tink that is cool"
-        color="sprk.black"
-        // color={["sprk.red", "sprk.purple", "sprk.green", "sprk.yellow"]}
+        // color="sprk.black"
+        color={["sprk.red", "sprk.purple", "sprk.green", "sprk.yellow"]}
         sx={{
           borderColor: "pink",
           borderWidth: "8px",
@@ -71,7 +71,7 @@ function SectionEmotion() {
           console.log("oh ya");
         }}
         matIsCool="ohboyyes"
-        className="shit-ya"
+        className="heck-ya"
         id="box-1"
       >
         <h2>

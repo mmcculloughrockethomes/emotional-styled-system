@@ -9,7 +9,7 @@ export interface anyReactProps {
   };
 }
 
-export type cssPropAndVar = [keyof themeValue, string];
+export type cssPropAndVar = [keyof themeValue, string | (string | number)[]];
 
 interface stylePropsConfigItem {
   property: string;
@@ -21,15 +21,17 @@ export interface stylePropsConfigTyps {
 }
 
 export function parseStyleProps(props: anyReactProps) {
-  const styleProps: { [x: string]: string | number } = {};
+  const styleProps: { [x: string]: string | number | (string | number)[] } = {};
   const forwardProps: { [x: string]: unknown } = {};
   const { sx, ...rest } = props;
 
   Object.entries(rest).forEach((entry: [string, unknown]) => {
     const [key, value] = entry;
+    // console.log("typeof value", value, typeof value);
     if (
       (isStyleProp(key) && typeof value === "string") ||
-      typeof value === "number"
+      typeof value === "number" ||
+      typeof value === "object"
     ) {
       styleProps[key] = value;
     } else {
@@ -48,17 +50,33 @@ interface mappedStylePropsTypes {
   [x: string]: string;
 }
 
-const getMappedStyleProps = (styleProps: { [x: string]: string | number }) => {
-  const mappedStyleProps: mappedStylePropsTypes = {};
-
+const mappedStyleProps: mappedStylePropsTypes = {};
+const getMappedStyleProps = (styleProps: {
+  [x: string]: string | number | (string | number)[];
+}) => {
   Object.entries(styleProps).forEach((entry) => {
     const [key, value] = entry;
+    // console.log("key", key);
 
-    const [cssProperty, cssValue] = getStylePropCssVar(key, value);
+    // const [cssProperty, cssValue] = getStylePropCssVar(key, value);
+    const [cssProperty, cssValue] = getMappedCSSPropertyAndValue(key, value);
     mappedStyleProps[cssProperty] = cssValue;
   });
 
   return mappedStyleProps;
+};
+
+const getMappedCSSPropertyAndValue = (
+  propKey: keyof stylePropsConfigTyps,
+  propValue: string | number | (string | number)[]
+): [keyof stylePropsConfigTyps, string] => {
+  if (typeof propValue === "object") {
+    // console.log("propValue", propValue);
+    return getResponsiveThemeValues(propKey, propValue);
+  } else {
+    // console.log("map it", propKey, propValue);
+    return getStylePropCssVar(propKey, propValue);
+  }
 };
 
 const getAllStyleProps = (): stylePropsConfigTyps => {
@@ -74,24 +92,6 @@ const isStyleProp = (propKey: string): Boolean => {
     ...color,
   });
   return allStylePropKeys.includes(propKey);
-};
-
-/**
- * covert {mb: ["4", "8", "12", "16"]} to ['marginBottom', ["var(--rh-space-4)", "var(--rh-space-8)", "var(--rh-space-12)", "var(--rh-space-16)"]]
- *
- */
-export const getResponsiveThemeValues = (
-  stylePropKey: keyof stylePropsConfigTyps,
-  stylePropValue: string[]
-) => {
-  const propKeyScale = getPropKeyScale(stylePropKey);
-  const allStyleProps = getAllStyleProps();
-
-  const cssValue = Object.values(stylePropValue).map((item) => {
-    return getCSSVarFunctionString(propKeyScale, item);
-  });
-  const result = [[allStyleProps[stylePropKey].property, cssValue]];
-  return result;
 };
 
 export const getPropKeyScale = (propKey: keyof stylePropsConfigTyps) => {
@@ -122,6 +122,24 @@ export function getStylePropCssVar(
 
   return [allStyleProps[propKey].property, CSSVarFunctionString];
 }
+
+/**
+ * covert {mb: ["4", "8", "12", "16"]} to ['marginBottom', ["var(--rh-space-4)", "var(--rh-space-8)", "var(--rh-space-12)", "var(--rh-space-16)"]]
+ *
+ */
+export const getResponsiveThemeValues = (
+  stylePropKey: keyof stylePropsConfigTyps,
+  stylePropValue: (string | number)[]
+) => {
+  const propKeyScale = getPropKeyScale(stylePropKey);
+  const allStyleProps = getAllStyleProps();
+
+  const cssValue = Object.values(stylePropValue).map((item) => {
+    return getCSSVarFunctionString(propKeyScale, item);
+  });
+  const result = [[allStyleProps[stylePropKey].property, cssValue]];
+  return result;
+};
 
 /**
  * Theme CSS var tools
