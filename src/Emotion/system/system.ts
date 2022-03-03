@@ -3,6 +3,9 @@ import theme, { themeType, themeValue } from "../theme";
 
 export interface anyReactProps {
   [x: string]: unknown;
+  sx?: {
+    [x: string]: string;
+  };
 }
 
 export type cssPropAndVar = [keyof themeValue, string];
@@ -19,7 +22,7 @@ export interface stylePropsConfigTyps {
 export function parseStyleProps(props: anyReactProps) {
   const styleProps: { [x: string]: string | number } = {};
   const forwardProps: { [x: string]: unknown } = {};
-  const { xs, ...rest } = props;
+  const { sx, ...rest } = props;
 
   Object.entries(rest).forEach((entry: [string, unknown]) => {
     const [key, value] = entry;
@@ -34,14 +37,16 @@ export function parseStyleProps(props: anyReactProps) {
   });
 
   const stylePropsMapped = getMappedStyleProps(styleProps);
+  const finalStyledPropsMapped = { ...stylePropsMapped, ...sx };
 
-  return [stylePropsMapped, forwardProps];
+  return [finalStyledPropsMapped, forwardProps];
 }
 
 // The prop keys are already known to be valid prop keys
 interface mappedStylePropsTypes {
   [x: string]: string;
 }
+
 const getMappedStyleProps = (styleProps: { [x: string]: string | number }) => {
   const mappedStyleProps: mappedStylePropsTypes = {};
 
@@ -71,8 +76,6 @@ const isStyleProp = (propKey: string): Boolean => {
 
 /**
  * Style Props tools
- *
- * WIP
  *
  * covert {mb: "36"} to ['marginBottom', "var(--rh-space-36)"]
  * covert {color: "sprk.purple.deep"} to ['color', "var(--rh-colors-sprk_purple_dark)"]

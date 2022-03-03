@@ -22,12 +22,13 @@ function SectionEmotion() {
         mb="9"
         showBoxTitle="asdfasdf"
         mt="8"
-        pl="12"
+        pl="4"
+        mx="4"
         myTitle="Wuuuut ya I tink that is cool"
         color="sprk.black"
-        xs={{
+        sx={{
           borderColor: "pink",
-          boxShadow: "1px 4px 18px #004fff",
+          borderWidth: "8px",
         }}
         onClick={() => {
           console.log("oh ya");
@@ -37,6 +38,21 @@ function SectionEmotion() {
         id="box-1"
       >
         <p>Hey, this is the first box!</p>
+      </Box>
+      <Box
+        mb="9"
+        showBoxTitle="asdfasdf"
+        mt="12"
+        pl="4"
+        mx="4"
+        onClick={() => {
+          console.log("oh ya");
+        }}
+        matIsCool="ohboyyes"
+        className="shit-ya"
+        id="box-1"
+      >
+        <p>Hey, this is the second box!</p>
       </Box>
     </div>
   );

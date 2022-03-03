@@ -17,21 +17,17 @@ const Box = ({
   showBoxTitle,
   myTitle,
   matIsCool,
-  ...otherProps
+  ...rest
 }: boxPropTypes) => {
   const TagName = as ? as : "div";
-  const [styleProps, forWardProps] = parseStyleProps(otherProps);
-
-  const BoxStyleProps = {
-    border: "solid thin",
-    borderColor: "purple",
-    boxShadow: "",
-  };
+  const [styleProps, forWardProps] = parseStyleProps(rest);
 
   const boxStyles = {
-    ...styleProps,
     border: "solid thin",
     marginRight: "20px",
+    borderColor: "orange",
+    borderWidth: "1px",
+    ...styleProps,
   };
 
   return (
