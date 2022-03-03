@@ -2,6 +2,7 @@ import {
   getThemeCSSVars,
   isValidThemeValue,
   getStylePropCssVar,
+  getResponsiveThemeValues,
 } from "./system";
 
 describe("system.js tests", () => {
@@ -17,6 +18,19 @@ describe("system.js tests", () => {
     const result = getStylePropCssVar("mb", "36");
     expect(result).toStrictEqual(["marginBottom", "var(--rh-space-36)"]);
   });
+
+  // it("covert style prop and array of values", () => {
+  //   const result = getResponsiveThemeValues("mb", ["4", "8", "12", "16"]);
+  //   expect(result).toStrictEqual([
+  //     "marginBottom",
+  //     [
+  //       "var(--rh-space-4)",
+  //       "var(--rh-space-8)",
+  //       "var(--rh-space-12)",
+  //       "var(--rh-space-16)",
+  //     ],
+  //   ]);
+  // });
 
   describe("getStylePropCssVar happy path", () => {
     it.each([

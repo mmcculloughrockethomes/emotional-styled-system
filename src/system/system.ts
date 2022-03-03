@@ -28,8 +28,8 @@ export function parseStyleProps(props: anyReactProps) {
   Object.entries(rest).forEach((entry: [string, unknown]) => {
     const [key, value] = entry;
     if (
-      isStyleProp(key) &&
-      (typeof value === "string" || typeof value === "number")
+      (isStyleProp(key) && typeof value === "string") ||
+      typeof value === "number"
     ) {
       styleProps[key] = value;
     } else {
@@ -53,6 +53,7 @@ const getMappedStyleProps = (styleProps: { [x: string]: string | number }) => {
 
   Object.entries(styleProps).forEach((entry) => {
     const [key, value] = entry;
+
     const [cssProperty, cssValue] = getStylePropCssVar(key, value);
     mappedStyleProps[cssProperty] = cssValue;
   });
@@ -76,6 +77,29 @@ const isStyleProp = (propKey: string): Boolean => {
 };
 
 /**
+ * covert {mb: ["4", "8", "12", "16"]} to ['marginBottom', ["var(--rh-space-4)", "var(--rh-space-8)", "var(--rh-space-12)", "var(--rh-space-16)"]]
+ *
+ */
+export const getResponsiveThemeValues = (
+  stylePropKey: keyof stylePropsConfigTyps,
+  stylePropValue: string[]
+) => {
+  const propKeyScale = getPropKeyScale(stylePropKey);
+  const allStyleProps = getAllStyleProps();
+
+  const cssValue = Object.values(stylePropValue).map((item) => {
+    return getCSSVarFunctionString(propKeyScale, item);
+  });
+  const result = [[allStyleProps[stylePropKey].property, cssValue]];
+  return result;
+};
+
+export const getPropKeyScale = (propKey: keyof stylePropsConfigTyps) => {
+  const allStyleProps = getAllStyleProps();
+  return allStyleProps[propKey].scale;
+};
+
+/**
  * Style Props tools
  *
  * covert {mb: "36"} to ['marginBottom', "var(--rh-space-36)"]
@@ -86,23 +110,15 @@ export function getStylePropCssVar(
   propValue: string | number
 ): [keyof stylePropsConfigTyps, string] {
   const allStyleProps = getAllStyleProps();
+  const propKeyScale = getPropKeyScale(propKey);
 
-  const isValueInTheme = isValidThemeValue(
-    allStyleProps[propKey].scale,
-    propValue
-  );
+  const isValueInTheme = isValidThemeValue(propKeyScale, propValue);
 
   if (!isValueInTheme) {
-    throwWarning("invalidThemeValue", [
-      allStyleProps[propKey].scale,
-      propValue,
-    ]);
+    throwWarning("invalidThemeValue", [propKeyScale, propValue]);
   }
 
-  const CSSVarFunctionString = getCSSVarFunctionString(
-    allStyleProps[propKey].scale,
-    propValue
-  );
+  const CSSVarFunctionString = getCSSVarFunctionString(propKeyScale, propValue);
 
   return [allStyleProps[propKey].property, CSSVarFunctionString];
 }
