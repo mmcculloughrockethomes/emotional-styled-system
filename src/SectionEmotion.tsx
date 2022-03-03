@@ -1,14 +1,16 @@
 /** @jsxImportSource @emotion/react */
+
 import { Box } from "./components";
 import { css } from "@emotion/react";
 import { getThemeCSSVars } from "./system";
-
 function SectionEmotion() {
+  // TODO - this shold be a helper, and on a higher-level component
   const varArray = getThemeCSSVars();
   let cssVariables = "";
   for (let i in varArray) {
     cssVariables += varArray[i];
   }
+
   return (
     <div
       css={css`

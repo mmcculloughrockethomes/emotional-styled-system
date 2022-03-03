@@ -21,6 +21,7 @@ const Box = ({
   const TagName = as ? as : "div";
   const [styleProps, forWardProps] = parseStyleProps(rest);
 
+  // TODO: We should be able to use style props here
   const boxStyles = {
     border: "solid thin",
     marginRight: "20px",
