@@ -21,14 +21,14 @@ function SectionEmotion() {
       <Box
         mb="9"
         showBoxTitle="asdfasdf"
-        mt="8"
-        pl="4"
-        mx="4"
+        mt={1}
+        pl="423px" // theme value/mapped |
+        // mx={1}
         myTitle="Wuuuut ya I tink that is cool"
         color="sprk.black"
         sx={{
-          borderColor: "pink",
-          borderWidth: "8px",
+          paddingLeft: "432px",
+          // borderWidth: "8px",
         }}
         onClick={() => {
           console.log("oh ya");
