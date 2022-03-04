@@ -3,8 +3,6 @@ import { Box } from "./components";
 import { css } from "@emotion/react";
 import { getThemeCSSVars } from "./system";
 
-// import TestingSystem from "./TestingSystem";
-
 function SectionEmotion() {
   const varArray = getThemeCSSVars();
   let cssVariables = "";
@@ -20,39 +18,43 @@ function SectionEmotion() {
       <h2>Sweet Emotion</h2>
       <Box
         mb="9"
-        showBoxTitle="asdfasdf"
+        showBoxTitle={false}
         mt={1}
-        pl="423px" // theme value/mapped |
-        // mx={1}
+        pl="4"
         myTitle="Wuuuut ya I tink that is cool"
         color="sprk.black"
         sx={{
-          paddingLeft: "432px",
-          // borderWidth: "8px",
+          paddingLeft: "101px",
+          borderWidth: "8px",
         }}
         onClick={() => {
-          console.log("oh ya");
+          console.log("muffin candy carrot cake biscuit");
         }}
-        matIsCool="ohboyyes"
-        className="shit-ya"
+        className="box-one"
         id="box-1"
       >
-        <p>Hey, this is the first box!</p>
+        <p>
+          Fruitcake muffin candy carrot cake biscuit gingerbread soufflé
+          tiramisu fruitcake. Liquorice icing pastry brownie wafer sesame snaps.
+        </p>
       </Box>
       <Box
         mb="9"
-        showBoxTitle="asdfasdf"
+        showBoxTitle={true}
         mt="12"
         pl="4"
         mx="4"
         onClick={() => {
-          console.log("oh ya");
+          console.log("Dessert ice cream pastry ");
         }}
-        matIsCool="ohboyyes"
-        className="shit-ya"
-        id="box-1"
+        className="box-2"
+        id="box-2"
       >
-        <p>Hey, this is the second box!</p>
+        <p>
+          Candy canes jelly beans macaroon caramels sweet roll. Jelly beans
+          chupa chups chocolate bar croissant cake muffin sweet roll icing.
+          Brownie gingerbread tart candy canes sweet sugar plum topping.
+        </p>
       </Box>
     </div>
   );

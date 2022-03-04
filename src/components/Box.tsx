@@ -6,7 +6,7 @@ import { parseStyleProps } from "../system";
 interface boxPropTypes {
   children: string | JSX.Element | JSX.Element[];
   as?: keyof JSX.IntrinsicElements;
-  showBoxTitle?: string;
+  showBoxTitle?: boolean;
   myTitle?: string;
   [x: string]: unknown;
 }
@@ -16,7 +16,6 @@ const Box = ({
   as,
   showBoxTitle,
   myTitle,
-  matIsCool,
   ...rest
 }: boxPropTypes) => {
   const TagName = as ? as : "div";
@@ -32,9 +31,7 @@ const Box = ({
 
   return (
     <>
-      <h3>
-        {showBoxTitle} and {matIsCool}
-      </h3>
+      <h3>{showBoxTitle && myTitle}</h3>
       <TagName css={boxStyles} {...forWardProps}>
         {children}
       </TagName>

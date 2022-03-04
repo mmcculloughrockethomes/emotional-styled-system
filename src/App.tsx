@@ -1,9 +1,13 @@
-import Emotion from './Emotion'
+import { ThemeProvider } from "@emotion/react";
+import theme from "./theme";
+import Emotion from "./Emotion";
 
 function App() {
   return (
     <div className="App">
-      <Emotion />
+      <ThemeProvider theme={theme}>
+        <Emotion />
+      </ThemeProvider>
     </div>
   );
 }
