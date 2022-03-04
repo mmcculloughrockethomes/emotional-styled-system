@@ -40,10 +40,12 @@ function SectionEmotion() {
       </Box>
       <Box
         mb="9"
-        showBoxTitle={true}
         mt="12"
         pl="4"
+        pr="14"
         mx="4"
+        color="sprk.purple"
+        showBoxTitle={true}
         onClick={() => {
           console.log("Dessert ice cream pastry ");
         }}
