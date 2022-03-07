@@ -1,4 +1,5 @@
 import { space, color } from "./config";
+import { SystemConfigTypes } from "./";
 import theme, { themeType, themeValue } from "../theme";
 import facepaint from "facepaint";
 
@@ -8,8 +9,14 @@ export interface anyReactProps {
     [x: string]: string;
   };
 }
+type stylePropValueType = number | string | string[] | number[];
 
-export type cssPropAndVar = [keyof themeValue, string | (string | number)[]];
+interface stylePropType {
+  [x: string]: stylePropValueType;
+}
+
+// export type cssPropAndVar = [keyof themeValue, string | (string | number)[]];
+type mappedCssPropertyAndValueType = [string | string[], stylePropValueType];
 
 interface stylePropsConfigItem {
   property: string;
@@ -21,13 +28,12 @@ export interface stylePropsConfigTyps {
 }
 
 export function parseStyleProps(props: anyReactProps) {
-  const styleProps: { [x: string]: string | number | (string | number)[] } = {};
-  const forwardProps: { [x: string]: unknown } = {};
+  const styleProps: stylePropType = {};
+  const forwardProps: anyReactProps = {};
   const { sx, ...rest } = props;
 
   Object.entries(rest).forEach((entry: [string, unknown]) => {
     const [key, value] = entry;
-    // console.log("typeof value", value, typeof value);
     if (
       (isStyleProp(key) && typeof value === "string") ||
       typeof value === "number" ||
@@ -51,13 +57,9 @@ interface mappedStylePropsTypes {
 }
 
 const mappedStyleProps: mappedStylePropsTypes = {};
-const getMappedStyleProps = (styleProps: {
-  [x: string]: string | number | (string | number)[];
-}) => {
+const getMappedStyleProps = (styleProps: stylePropType) => {
   Object.entries(styleProps).forEach((entry) => {
     const [key, value] = entry;
-    // console.log("key", key);
-
     // const [cssProperty, cssValue] = getStylePropCssVar(key, value);
     const [cssProperty, cssValue] = getMappedCSSPropertyAndValue(key, value);
     mappedStyleProps[cssProperty] = cssValue;
@@ -67,14 +69,13 @@ const getMappedStyleProps = (styleProps: {
 };
 
 const getMappedCSSPropertyAndValue = (
-  propKey: keyof stylePropsConfigTyps,
-  propValue: string | number | (string | number)[]
+  propKey: keyof stylePropsConfigTyps, // TODO: This can probably be a string
+  propValue: stylePropValueType
 ): [keyof stylePropsConfigTyps, string] => {
   if (typeof propValue === "object") {
-    // console.log("propValue", propValue);
     return getResponsiveThemeValues(propKey, propValue);
+    // return getResponsiveThemeValues(propKey, ["2", "4", "6", "8"]);
   } else {
-    // console.log("map it", propKey, propValue);
     return getStylePropCssVar(propKey, propValue);
   }
 };
@@ -106,7 +107,7 @@ export const getPropKeyScale = (propKey: keyof stylePropsConfigTyps) => {
  * covert {color: "sprk.purple.deep"} to ['color', "var(--rh-colors-sprk_purple_dark)"]
  */
 export function getStylePropCssVar(
-  propKey: keyof stylePropsConfigTyps,
+  propKey: keyof stylePropsConfigTyps, // TODO: This can probably be a string
   propValue: string | number
 ): [keyof stylePropsConfigTyps, string] {
   const allStyleProps = getAllStyleProps();
@@ -130,30 +131,28 @@ export function getStylePropCssVar(
 export const getResponsiveThemeValues = (
   stylePropKey: keyof stylePropsConfigTyps,
   stylePropValue: (string | number)[]
-) => {
+): mappedCssPropertyAndValueType => {
   const propKeyScale = getPropKeyScale(stylePropKey);
   const allStyleProps = getAllStyleProps();
 
   const cssValue = Object.values(stylePropValue).map((item) => {
     return getCSSVarFunctionString(propKeyScale, item);
   });
-  const result = [[allStyleProps[stylePropKey].property, cssValue]];
-  return result;
+  console.log(
+    "allStyleProps[stylePropKey].property",
+    allStyleProps[stylePropKey].property,
+    typeof allStyleProps[stylePropKey].property
+  );
+  return [[allStyleProps[stylePropKey].property, cssValue]];
 };
-
-/**
- * Theme CSS var tools
- */
 
 /**
  * Validates that a given themeKey and themeValueKey are found within the theme
  */
 export function isValidThemeValue(
   themeKey: keyof themeType,
-  themeValueKey: keyof themeValue | unknown
-): boolean {
-  if (typeof themeValueKey !== "string" && typeof themeValueKey !== "number")
-    return false;
+  themeValueKey: keyof themeValue
+) {
   return Boolean(theme?.[themeKey]?.[themeValueKey]);
 }
 

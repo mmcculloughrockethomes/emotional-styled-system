@@ -19,7 +19,7 @@ function SectionEmotion() {
     >
       <h2>Sweet Emotion</h2>
       <Box
-        mb="9"
+        mb={["2", "4", "6", "8"]}
         showBoxTitle={false}
         mt={1}
         pl="4"

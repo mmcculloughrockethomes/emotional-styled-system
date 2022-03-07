@@ -1,2 +1,2 @@
 import { ColorProps, SpaceProps } from "./config";
-export interface StyleProps extends ColorProps, SpaceProps {}
+export interface SystemConfigTypes extends ColorProps, SpaceProps {}

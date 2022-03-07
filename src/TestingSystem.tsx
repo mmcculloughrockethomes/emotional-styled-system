@@ -1,8 +1,8 @@
 import * as CSS from "csstype";
 import { Box } from "./components";
-import { StyleProps } from "./system";
+import { SystemConfigTypes } from "./system";
 
-function showMeTheProps(cssProperties: StyleProps) {
+function showMeTheProps(cssProperties: SystemConfigTypes) {
   return "hello";
 }
 
