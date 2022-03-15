@@ -35,7 +35,7 @@ function SectionEmotion() {
         className="box-one"
         id="box-1"
       >
-        <h4>This has the breakpoitns for margin bottom.</h4>
+        <h4>This has the breakpoints for margin bottom.</h4>
         <p>
           Fruitcake muffin candy carrot cake biscuit gingerbread soufflé
           tiramisu fruitcake. Liquorice icing pastry brownie wafer sesame snaps.
