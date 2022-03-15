@@ -8,7 +8,7 @@ interface boxPropTypes {
   as?: keyof JSX.IntrinsicElements;
   showBoxTitle?: boolean;
   myTitle?: string;
-  [x: string]: unknown;
+  [x: string]: unknown | null;
 }
 
 const Box = ({
@@ -35,7 +35,7 @@ const Box = ({
   return (
     <>
       <h3>{showBoxTitle && myTitle}</h3>
-      <TagName css={boxStyles} {...forWardProps}>
+      <TagName css={CSSWithMediaQueries} {...forWardProps}>
         {children}
       </TagName>
     </>

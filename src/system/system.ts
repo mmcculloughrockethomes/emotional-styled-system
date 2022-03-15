@@ -78,11 +78,11 @@ const getMappedCSSPropertyAndValue = (
   // ): [string | string[], string | string[]] => {
   if (typeof propValue === "object") {
     const thingOne = getResponsiveThemeValues(propKey, propValue);
-    console.log("thingOne", thingOne);
+    // console.log("thingOne", thingOne);
     return thingOne;
   } else {
     const thingTwp = getStylePropCssVar(propKey, propValue);
-    console.log("thingTwp", thingTwp);
+    // console.log("thingTwp", thingTwp);
     return thingTwp;
   }
 };
@@ -237,6 +237,7 @@ export function getThemeCSSVars() {
 export function getFinalCss(
   css: mappedStylePropsTypes
 ): facepaint.DynamicStyle[] {
+  console.log("css", css);
   const mq = facepaint([
     "@media(min-width: 420px)",
     "@media(min-width: 920px)",
