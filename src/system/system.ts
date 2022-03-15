@@ -53,11 +53,13 @@ export function parseStyleProps(props: anyReactProps) {
 
 // The prop keys are already known to be valid prop keys
 interface mappedStylePropsTypes {
-  [x: string]: string;
+  [x: string | number]: string;
 }
 
-const mappedStyleProps: mappedStylePropsTypes = {};
 const getMappedStyleProps = (styleProps: stylePropType) => {
+  const mappedStyleProps: {
+    [x: string | number]: string | string[];
+  } = {};
   Object.entries(styleProps).forEach((entry) => {
     const [key, value] = entry;
     // const [cssProperty, cssValue] = getStylePropCssVar(key, value);
@@ -72,6 +74,7 @@ const getMappedCSSPropertyAndValue = (
   propKey: keyof stylePropsConfigTyps, // TODO: This can probably be a string
   propValue: stylePropValueType
 ): [keyof stylePropsConfigTyps, string | string[]] => {
+  // ): [string | string[], string | string[]] => {
   if (typeof propValue === "object") {
     const thingOne = getResponsiveThemeValues(propKey, propValue);
     console.log("thingOne", thingOne);
@@ -127,8 +130,6 @@ export function getStylePropCssVar(
   return [allStyleProps[propKey].property, CSSVarFunctionString];
 }
 
-const getArrayCSSVarFunctionString = (): string[] => {};
-
 /**
  * covert {mb: ["4", "8", "12", "16"]} to ['marginBottom', ["var(--rh-space-4)", "var(--rh-space-8)", "var(--rh-space-12)", "var(--rh-space-16)"]]
  *
@@ -136,8 +137,8 @@ const getArrayCSSVarFunctionString = (): string[] => {};
 export const getResponsiveThemeValues = (
   stylePropKey: keyof stylePropsConfigTyps,
   stylePropValue: (string | number)[]
-  // ): [keyof stylePropsConfigTyps, string | string[]] => {
-): [string, string | string[]] => {
+): [keyof stylePropsConfigTyps, string | string[]] => {
+  // ): [string, string | string[]] => {
   const propKeyScale = getPropKeyScale(stylePropKey);
   const allStyleProps = getAllStyleProps();
 
@@ -148,8 +149,7 @@ export const getResponsiveThemeValues = (
 
   const property = allStyleProps[stylePropKey].property;
 
-  const result = [property, "cssValue"];
-  console.log("result", result);
+  const result = [property, cssValue] as [string, string | string[]];
   return result;
 };
 
