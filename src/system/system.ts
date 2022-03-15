@@ -9,7 +9,7 @@ export interface anyReactProps {
     [x: string]: string;
   };
 }
-type stylePropValueType = number | string | string[] | number[];
+type stylePropValueType = number | string | string[] | number[] | null | object;
 
 interface stylePropType {
   [x: string]: stylePropValueType;
@@ -39,6 +39,7 @@ export function parseStyleProps(props: anyReactProps) {
       typeof value === "number" ||
       typeof value === "object"
     ) {
+      const thing = key;
       styleProps[key] = value;
     } else {
       forwardProps[key] = value;
@@ -71,7 +72,7 @@ const getMappedStyleProps = (styleProps: stylePropType) => {
 };
 
 const getMappedCSSPropertyAndValue = (
-  propKey: keyof stylePropsConfigTyps, // TODO: This can probably be a string
+  propKey: keyof stylePropsConfigTyps,
   propValue: stylePropValueType
 ): [keyof stylePropsConfigTyps, string | string[]] => {
   // ): [string | string[], string | string[]] => {
@@ -136,16 +137,18 @@ export function getStylePropCssVar(
  */
 export const getResponsiveThemeValues = (
   stylePropKey: keyof stylePropsConfigTyps,
-  stylePropValue: (string | number)[]
+  stylePropValue: stylePropValueType
 ): [keyof stylePropsConfigTyps, string | string[]] => {
   // ): [string, string | string[]] => {
   const propKeyScale = getPropKeyScale(stylePropKey);
   const allStyleProps = getAllStyleProps();
 
-  const cssValue = Object.values(stylePropValue).map((item) => {
-    const thing = getCSSVarFunctionString(propKeyScale, item);
-    return thing;
-  });
+  const cssValue = stylePropValue
+    ? Object.values(stylePropValue).map((item) => {
+        const thing = getCSSVarFunctionString(propKeyScale, item);
+        return thing;
+      })
+    : null;
 
   const property = allStyleProps[stylePropKey].property;
 
