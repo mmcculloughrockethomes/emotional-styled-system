@@ -1,5 +1,4 @@
 import { space, color } from "./config";
-import { SystemConfigTypes } from "./";
 import theme, { themeType, themeValue } from "../theme";
 import facepaint from "facepaint";
 
@@ -14,9 +13,6 @@ type stylePropValueType = number | string | string[] | number[] | null | object;
 interface stylePropType {
   [x: string]: stylePropValueType;
 }
-
-// export type cssPropAndVar = [keyof themeValue, string | (string | number)[]];
-type mappedCssPropertyAndValueType = [string | string[], string | string[]];
 
 interface stylePropsConfigItem {
   property: string;
@@ -41,7 +37,6 @@ export function parseStyleProps(props: anyReactProps): parsedStyleProps {
       typeof value === "number" ||
       typeof value === "object"
     ) {
-      const thing = key;
       styleProps[key] = value;
     } else {
       forwardProps[key] = value;
@@ -65,7 +60,6 @@ const getMappedStyleProps = (styleProps: stylePropType) => {
   } = {};
   Object.entries(styleProps).forEach((entry) => {
     const [key, value] = entry;
-    // const [cssProperty, cssValue] = getStylePropCssVar(key, value);
     const [cssProperty, cssValue] = getMappedCSSPropertyAndValue(key, value);
     mappedStyleProps[cssProperty] = cssValue;
   });
@@ -77,15 +71,10 @@ const getMappedCSSPropertyAndValue = (
   propKey: keyof stylePropsConfigTyps,
   propValue: stylePropValueType
 ): [keyof stylePropsConfigTyps, string | string[]] => {
-  // ): [string | string[], string | string[]] => {
   if (typeof propValue === "object") {
-    const thingOne = getResponsiveThemeValues(propKey, propValue);
-    // console.log("thingOne", thingOne);
-    return thingOne;
+    return getResponsiveThemeValues(propKey, propValue);
   } else {
-    const thingTwp = getStylePropCssVar(propKey, propValue);
-    // console.log("thingTwp", thingTwp);
-    return thingTwp;
+    return getStylePropCssVar(propKey, propValue);
   }
 };
 
@@ -141,7 +130,6 @@ export const getResponsiveThemeValues = (
   stylePropKey: keyof stylePropsConfigTyps,
   stylePropValue: stylePropValueType
 ): [keyof stylePropsConfigTyps, string | string[]] => {
-  // ): [string, string | string[]] => {
   const propKeyScale = getPropKeyScale(stylePropKey);
   const allStyleProps = getAllStyleProps();
 
