@@ -27,7 +27,9 @@ export interface stylePropsConfigTyps {
   [x: string]: stylePropsConfigItem;
 }
 
-export function parseStyleProps(props: anyReactProps) {
+type parsedStyleProps = [mappedStylePropsTypes, anyReactProps];
+
+export function parseStyleProps(props: anyReactProps): parsedStyleProps {
   const styleProps: stylePropType = {};
   const forwardProps: anyReactProps = {};
   const { sx, ...rest } = props;
@@ -54,7 +56,7 @@ export function parseStyleProps(props: anyReactProps) {
 
 // The prop keys are already known to be valid prop keys
 interface mappedStylePropsTypes {
-  [x: string | number]: string;
+  [x: string | number]: string | string[];
 }
 
 const getMappedStyleProps = (styleProps: stylePropType) => {

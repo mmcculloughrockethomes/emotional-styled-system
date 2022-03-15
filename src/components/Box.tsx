@@ -29,8 +29,9 @@ const Box = ({
     borderWidth: "1px",
     ...styleProps,
   };
-
+  console.log("boxStyles", boxStyles);
   const CSSWithMediaQueries = getFinalCss(boxStyles);
+  console.log("CSSWithMediaQueries", CSSWithMediaQueries);
 
   return (
     <>
