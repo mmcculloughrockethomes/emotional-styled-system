@@ -16,7 +16,7 @@ interface stylePropType {
 }
 
 // export type cssPropAndVar = [keyof themeValue, string | (string | number)[]];
-type mappedCssPropertyAndValueType = [string | string[], stylePropValueType];
+type mappedCssPropertyAndValueType = [string | string[], string | string[]];
 
 interface stylePropsConfigItem {
   property: string;
@@ -71,12 +71,15 @@ const getMappedStyleProps = (styleProps: stylePropType) => {
 const getMappedCSSPropertyAndValue = (
   propKey: keyof stylePropsConfigTyps, // TODO: This can probably be a string
   propValue: stylePropValueType
-): [keyof stylePropsConfigTyps, string] => {
+): [keyof stylePropsConfigTyps, string | string[]] => {
   if (typeof propValue === "object") {
-    return getResponsiveThemeValues(propKey, propValue);
-    // return getResponsiveThemeValues(propKey, ["2", "4", "6", "8"]);
+    const thingOne = getResponsiveThemeValues(propKey, propValue);
+    console.log("thingOne", thingOne);
+    return thingOne;
   } else {
-    return getStylePropCssVar(propKey, propValue);
+    const thingTwp = getStylePropCssVar(propKey, propValue);
+    console.log("thingTwp", thingTwp);
+    return thingTwp;
   }
 };
 
@@ -124,6 +127,8 @@ export function getStylePropCssVar(
   return [allStyleProps[propKey].property, CSSVarFunctionString];
 }
 
+const getArrayCSSVarFunctionString = (): string[] => {};
+
 /**
  * covert {mb: ["4", "8", "12", "16"]} to ['marginBottom', ["var(--rh-space-4)", "var(--rh-space-8)", "var(--rh-space-12)", "var(--rh-space-16)"]]
  *
@@ -131,19 +136,21 @@ export function getStylePropCssVar(
 export const getResponsiveThemeValues = (
   stylePropKey: keyof stylePropsConfigTyps,
   stylePropValue: (string | number)[]
-): mappedCssPropertyAndValueType => {
+  // ): [keyof stylePropsConfigTyps, string | string[]] => {
+): [string, string | string[]] => {
   const propKeyScale = getPropKeyScale(stylePropKey);
   const allStyleProps = getAllStyleProps();
 
   const cssValue = Object.values(stylePropValue).map((item) => {
-    return getCSSVarFunctionString(propKeyScale, item);
+    const thing = getCSSVarFunctionString(propKeyScale, item);
+    return thing;
   });
-  console.log(
-    "allStyleProps[stylePropKey].property",
-    allStyleProps[stylePropKey].property,
-    typeof allStyleProps[stylePropKey].property
-  );
-  return [[allStyleProps[stylePropKey].property, cssValue]];
+
+  const property = allStyleProps[stylePropKey].property;
+
+  const result = [property, "cssValue"];
+  console.log("result", result);
+  return result;
 };
 
 /**
