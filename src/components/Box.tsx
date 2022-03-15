@@ -29,14 +29,12 @@ const Box = ({
     borderWidth: "1px",
     ...styleProps,
   };
-  console.log("boxStyles", boxStyles);
   const CSSWithMediaQueries = getFinalCss(boxStyles);
-  console.log("CSSWithMediaQueries", CSSWithMediaQueries);
 
   return (
     <>
-      <h3>{showBoxTitle && myTitle}</h3>
       <TagName css={CSSWithMediaQueries} {...forWardProps}>
+        {showBoxTitle && <h3>{myTitle}</h3>}
         {children}
       </TagName>
     </>

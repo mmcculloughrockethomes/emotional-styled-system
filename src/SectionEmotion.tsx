@@ -19,7 +19,7 @@ function SectionEmotion() {
     >
       <h2>Sweet Emotion</h2>
       <Box
-        mb={["2", "4", "6", "8"]}
+        mb={["2", "16", "32", "64"]}
         showBoxTitle={false}
         mt={1}
         pl="4"
@@ -35,6 +35,7 @@ function SectionEmotion() {
         className="box-one"
         id="box-1"
       >
+        <h4>This has the breakpoitns for margin bottom.</h4>
         <p>
           Fruitcake muffin candy carrot cake biscuit gingerbread soufflé
           tiramisu fruitcake. Liquorice icing pastry brownie wafer sesame snaps.
@@ -48,6 +49,7 @@ function SectionEmotion() {
         mx="4"
         color="sprk.purple"
         showBoxTitle={true}
+        myTitle="The second box title."
         onClick={() => {
           console.log("Dessert ice cream pastry ");
         }}
