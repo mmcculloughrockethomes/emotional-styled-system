@@ -227,7 +227,6 @@ export function getThemeCSSVars() {
 export function getFinalCss(
   css: mappedStylePropsTypes
 ): facepaint.DynamicStyle[] {
-  console.log("css", css);
   const mq = facepaint([
     "@media(min-width: 420px)",
     "@media(min-width: 920px)",
